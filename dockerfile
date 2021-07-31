@@ -1,5 +1,5 @@
 # Rustイメージを指定
-FROM rust:1.43
+FROM rust:1.43 as builder
 # 実行ディレクトリを指定。
 WORKDIR /todo
 # ビルド時に必要なファイルをイメージにコピーする。
@@ -16,7 +16,9 @@ COPY ./templates ./templates
 RUN rm -f target/release/deps/todo*
 # 改めてビルド
 RUN cargo build --release
-# パスの通った場所にインストールする
-RUN cargo install --path .
+# 新しくリリース前のイメージを用意します。
+FROM debian:10.4
+# builderイメージからtodoのみをコピーして/usr/local/binに配置します。
+COPY --from=builder /todo/target/release/todo /usr/local/bin/todo
 # Webアプリ実行
 CMD ["todo"]
