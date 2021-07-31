@@ -32,8 +32,23 @@ impl ResponseError for MyError {}
 
 #[get("/")]
 async fn index() -> Result<HttpResponse, MyError> {
-    let response_body = "Hello World!";
-    Ok(HttpResponse::Ok().body(response_body))
+    // 埋め込み用の変数を生成する。
+    let mut entries = Vec::new();
+    // 変数を代入する。
+    entries.push(TodoEntry {
+        id: 1,
+        text: "First entry".to_string(),
+    });
+    entries.push(TodoEntry {
+        id: 2,
+        text: "Second entry".to_string(),
+    });
+    // htmlを読み込む
+    let html = IndexTemplate{entries};
+    // body部を作成
+    let response_body = html.render()?;
+    // レスポンスの内容
+    Ok(HttpResponse::Ok().content_type("text/html").body(response_body))
 }
 
 #[actix_rt::main]
