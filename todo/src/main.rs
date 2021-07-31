@@ -2,10 +2,19 @@
  * メインファイル
  */
 
-use actix_web::{get, App, HttpResponse, HttpServer};
+ // 必要なモジュール読み込み
+use actix_web::{get, App, HttpResponse, HttpServer, ResponseError};
+use thiserror::Error;
+
+// エラー用の列挙型変数
+#[derive(Error, Debug)]
+enum MyError {}
+
+// Myerrorを継承したインターフェース
+impl ResponseError for MyError {}
 
 #[get("/")]
-async fn index() -> Result<HttpResponse, actix_web::Error> {
+async fn index() -> Result<HttpResponse, MyError> {
     let response_body = "Hello World!";
     Ok(HttpResponse::Ok().body(response_body))
 }
