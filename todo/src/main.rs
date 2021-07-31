@@ -3,7 +3,7 @@
  */
 
  // 必要なモジュール読み込み
-use actix_web::{get, App, HttpResponse, HttpServer, ResponseError};
+use actix_web::{get, web ,App, HttpResponse, HttpServer, ResponseError};
 use thiserror::Error;
 use askama::Template;
 use r2d2::Pool;
