@@ -3,12 +3,25 @@
  */
 
  // 必要なモジュール読み込み
-use actix_web::{get, web ,App, HttpResponse, HttpServer, ResponseError};
+use actix_web::{get, http::header, post ,web ,App, HttpResponse, HttpServer, ResponseError};
 use thiserror::Error;
 use askama::Template;
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
 use rusqlite::params;
+use serde::Deserialize;
+
+// Addtodo用のエントリ
+#[derive(Deserialize)]
+struct AddParams {
+    text: String,
+}
+
+// Deletetodo用のエントリ
+#[derive(Deserialize)]
+struct DeleteParams {
+    id: u32,
+}
 
 // Todoリスト用のエントリ
 struct TodoEntry {
@@ -39,6 +52,29 @@ enum MyError {
 // Myerrorを継承したインターフェース
 impl ResponseError for MyError {}
 
+// 追加の設定
+#[post("/add")]
+async fn add_todo(params: web::Form<AddParams>, db: web::Data<r2d2::Pool<SqliteConnectionManager>>,) -> Result<HttpResponse, MyError> {
+    // コネクション取得
+    let conn = db.get()?;
+    // SQL文を実行する。
+    conn.execute("INSERT INTO todo (text) VALUES (?)", &[&params.text])?;
+    // ルート画面へ遷移する。
+    Ok(HttpResponse::SeeOther().header(header::LOCATION, "/").finish())
+}
+
+// 削除の場合
+#[post("/delete")]
+async fn delete_todo(params: web::Form<DeleteParams>, db: web::Data<r2d2::Pool<SqliteConnectionManager>>,) -> Result<HttpResponse, MyError> {
+    // コネクション取得
+    let conn = db.get()?;
+    // SQL文を実行する。
+    conn.execute("DELETE FROM todo WHERE id=?", &[&params.id])?;
+    // ルート画面へ遷移する。
+    Ok(HttpResponse::SeeOther().header(header::LOCATION, "/").finish())
+}
+
+// ルート画面の場合
 #[get("/")]
 async fn index(db: web::Data<Pool<SqliteConnectionManager>>) -> Result<HttpResponse, MyError> {
     // コネクション取得
@@ -82,7 +118,13 @@ async fn main() -> Result<(), actix_web::Error> {
         params![],
     ).expect("Failed to create a table `todo`.");
     // Webサーバーの設定(コネクションプールを渡す。)
-    HttpServer::new(move || App::new().service(index).data(pool.clone()))
+    HttpServer::new(move || {
+        App::new()
+            .service(index)
+            .service(add_todo)
+            .service(delete_todo)
+            .data(pool.clone())
+        })
         .bind("0.0.0.0:8080")?
         .run()
         .await?;
