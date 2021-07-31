@@ -1,0 +1,29 @@
+cargo:rerun-if-env-changed=SQLITE_MAX_VARIABLE_NUMBER
+cargo:rerun-if-env-changed=SQLITE_MAX_EXPR_DEPTH
+TARGET = Some("x86_64-apple-darwin")
+OPT_LEVEL = Some("0")
+HOST = Some("x86_64-apple-darwin")
+CC_x86_64-apple-darwin = None
+CC_x86_64_apple_darwin = None
+HOST_CC = None
+CC = None
+CFLAGS_x86_64-apple-darwin = None
+CFLAGS_x86_64_apple_darwin = None
+HOST_CFLAGS = None
+CFLAGS = None
+CRATE_CC_NO_DEFAULTS = None
+DEBUG = Some("true")
+CARGO_CFG_TARGET_FEATURE = Some("fxsr,sse,sse2,sse3,ssse3")
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-arch" "x86_64" "-DSQLITE_CORE" "-DSQLITE_DEFAULT_FOREIGN_KEYS=1" "-DSQLITE_ENABLE_API_ARMOR" "-DSQLITE_ENABLE_COLUMN_METADATA" "-DSQLITE_ENABLE_DBSTAT_VTAB" "-DSQLITE_ENABLE_FTS3" "-DSQLITE_ENABLE_FTS3_PARENTHESIS" "-DSQLITE_ENABLE_FTS5" "-DSQLITE_ENABLE_JSON1" "-DSQLITE_ENABLE_LOAD_EXTENSION=1" "-DSQLITE_ENABLE_MEMORY_MANAGEMENT" "-DSQLITE_ENABLE_RTREE" "-DSQLITE_ENABLE_STAT2" "-DSQLITE_ENABLE_STAT4" "-DSQLITE_SOUNDEX" "-DSQLITE_THREADSAFE=1" "-DSQLITE_USE_URI" "-DHAVE_USLEEP=1" "-DSQLITE_HAVE_ISNAN" "-o" "/Users/harukikondo/git/RustTodoApp/todo/target/debug/build/libsqlite3-sys-d308afb5cebe7a83/out/sqlite3/sqlite3.o" "-c" "sqlite3/sqlite3.c"
+exit status: 0
+AR_x86_64-apple-darwin = None
+AR_x86_64_apple_darwin = None
+HOST_AR = None
+AR = None
+running: "ar" "cq" "/Users/harukikondo/git/RustTodoApp/todo/target/debug/build/libsqlite3-sys-d308afb5cebe7a83/out/libsqlite3.a" "/Users/harukikondo/git/RustTodoApp/todo/target/debug/build/libsqlite3-sys-d308afb5cebe7a83/out/sqlite3/sqlite3.o"
+exit status: 0
+running: "ar" "s" "/Users/harukikondo/git/RustTodoApp/todo/target/debug/build/libsqlite3-sys-d308afb5cebe7a83/out/libsqlite3.a"
+exit status: 0
+cargo:rustc-link-lib=static=sqlite3
+cargo:rustc-link-search=native=/Users/harukikondo/git/RustTodoApp/todo/target/debug/build/libsqlite3-sys-d308afb5cebe7a83/out
+cargo:lib_dir=/Users/harukikondo/git/RustTodoApp/todo/target/debug/build/libsqlite3-sys-d308afb5cebe7a83/out
